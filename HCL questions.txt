@@ -1,0 +1,19 @@
+1
+
+What is daemonset in kubernetes?
+
+2
+
+What is admission controller?
+
+3
+
+What is persistent volumes?
+
+4
+
+What is statefulset in Kubernetes?
+
+5
+
+What is namespace, and when should we create a new one?
