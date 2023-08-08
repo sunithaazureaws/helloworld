@@ -1,0 +1,572 @@
+
+
+SUB-LANGUAGS OF SQL;
+--------------------
+1)DDL: crate,alter,sp_rename,truncate,drop.
+2)DML: insert,update,delete.
+3)DQL: select.
+4)TCL: commit,rollback,savepoint.
+5)DCL: grant,revoke
+
+WORKING WITH DDL;
+----------------
+ >create new objects(tables,views,synonym,procedure,function,triger..)
+ >modify the structure of th the objects.
+ >drop the objects from db.
+
+
+(A)CREATE:
+----------
+.To create new database&table.
+
+SYNTAX TO CREATE NEW DB;
+-------------------------
+
+To create database myclassdb;--------
+
+  * create database myclass;
+  * use myclass;
+
+To create table employee;-------
+
+  *create table employee(empid int,empname char(10),salary money,age tinyint);
+  
+To c the structure of a table employee;---------
+
+  *sp_help employee;
+
+(B)ALTER;
+----------
+.To change datatype and size of   datatype.
+.To add new column to the table.
+.To change column name.
+.To drop the unwanted columns from table.
+
+SUB COMMANDS OF ALTER;
+------------------------
+1.ALTER-ALTER
+2.ALTER-ADD
+3.SP_RENAME
+4.ALTER-DROP
+
+
+1.ALTER-ALTER;
+---------------
+TO change data type and size of the data type.
+
+
+*alter table employee alter column empname varchar(50);
+
+2.ALTER-ADD;
+------------
+TO add new columm
+
+alter table employee add eadress varchar(50);
+
+3.SP_RENAME;
+-------------
+TO change column name
+
+*sp_rename 'employee.empname','ename';
+
+TO change table name
+
+*sp_rename 'employee','emp';
+
+4.ALTER-DROP;
+-------------
+TO drop unwanted columns from table.
+*alter table emp drop column eadress;
+
+TRUNCATE;
+-----------
+.to dlt all rowes from tbl at a time
+.we cannot dlt specific row from table
+.it not support 'WHERE' keyword condition.
+
+
+select*from emp;
+
+truncate table emp where empid=102;..............not allowed.
+truncate table emp;...........allowed.
+
+DROP;
+------
+TO delete table permanenty(table&data)
+
+drop table emp;
+
+23/04/2023
+sunday
+
+DML COMMANDS;
+-------------
+TO modify or to change into table data.
+
+insert,update,delte.
+ 
+INSERT;TO insert new values into tables.
+------
+method 1;
+---------
+*insert into student
+
+create table student (stid int,sname varchar(40),sfee decimal,age tinyint);
+
+*insert into student values(101,'adams',3500);.........not allowed
+*insert into student values(101,'adams',3500,23);...... allowed
+ *here into key word is optional where as oracle it is mandaory.
+select * from student;
+method 2;
+----------
+lefted column by default take null value
+
+insert student(stid,sname,age)values(102,'james',24);
+
+insert student values(103,'warner',5500,25);
+
+ insert student (stid,sname,sfee)values(104,'miller',6200);
+
+UPDATE;
+--------
+.to change existed data into another
+.where key word must otherwise entair row get effect.
+
+update student set sfee=5000 where stid=103;............exemple1
+update student set sage=26 where sage=null;.......example2 it -------here =null does not affect row(is null can).
+
+ *update student set sfee=5000 where stid=103;
+ *update student set age=26 where age=null;
+ *update student set age=26 where age is null;
+
+
+DELETE;
+--------
+
+i can dlt specific row from tbl&all rows.
+
+*delete from student where sname='adams';
+*delete from student where sfee is null;
+
+DQL/DRL;Data query/data retrive language;
+------------------------------------------
+create new data base student
+
+*create table student (stid int,sname varchar(40),sfee decimal,age tinyint);
+
+STID SNAME  SFEE     AGE
+101   ADAMS  2500    23
+102   SCOTT  3600    25
+103   JAMES  4500    24
+
+data retrive methods 3ways;
+1.Projection method; without condition
+
+* select*from student;
+      or
+* select stid,sname,sfee,age from student;------------------(without condition retriving data from table)
+
+2.Selection method; with condition
+
+*  select*from student where sname='scott';
+       or
+*  select stid,sfee from student where sname='scott';-----------------(with condition)
+
+3.Joins;to retrive data from more than one table.
+
+
+IDENTITY(SEED,INCREMENT);
+------------------------
+.auto increment values on a columsn
+.SEED;strting value of id....(1)default
+.INCREMENT; Incremental values in b/w ID to ID......(1)default
+
+NUMARIC DATATYPE COLUMNS;(int,decimal,numaric....)
+
+.IDENTITY only applicable for numaric data not for charector datatype
+.a table should contain only one iddentity function only.
+
+>select required db
+>create tb emp wihout 2 identity columns
+
+*create table emp(eid int identity,ename varchar(40),salary money);
+*select *from emp... without data it can provide tb
+
+ *insert into emp values(1,'AA',23000);.......not valid
+
+ *insert into emp values ('AA',23000).....valid
+
+ *insert into emp(ename,salary)values('BB',15000);.....not valid
+
+ *insert into emp(id,ename,salary)valeus(2,'BB',15000);.....valid
+ *insert into emp values('CC',460000);......valid
+ * insert into emp values(100,'DD',21000);.....not valid
+ * insert into smp values('DD',21000);......valid
+ *insert into smp values('EE',22000),('FF',23000)....valid
+
+to insert explicitily to value to identity column here u use 
+
+ .set identity_insert smp on.....should use for insert vallues to add identity column
+
+ set identity_insert <tb> on/off
+
+on=for execute 
+off= for not execute
+
+28/04/2023
+friday
+
+primary key&foreign key constraints;
+------------------------------------
+
+>to make the relaton b/w 2 or more than2 tables.
+
+conditions;
+-----------
+1.one tb contains pk & another tb contain fk
+2.a common column in both tables
+3.the common column must hv same datatype
+
+
+
+
+create table department(deptno int primary key,dname varchar(40),locatio varchar(40));......pk(parent tb)
+insert department values(10,'DBA','HYD'),(20,'SAP','MUMBAI'),(30,'HR','PUNE');
+
+create table employeee (empid int,ename varchar (40),salary money,deptno int foreign key references department(deptno));...fk(child tb).
+
+select*from department;
+select*from employeee;
+insert employeee values(101,'ADAMS',5600,10);
+insert employeee values(102,'JAMES',4500,20);
+Insert employeee values(103,'SCOTT',2300,30);
+Insert employeee values(103,'miller',6200,40);......not allowed
+
+JOINS;
+------
+to retrive data from more than one table
+A.ANSI_FORMAT(with "ON" key word join condition)....new style format
+
+1.INNER JOIN
+2.OUTER JOIN
+  1.left-outer
+  2.right-outer
+  3.full-outer
+3.CROSS-JOIN
+4.NATURAL-JOIN
+
+B.NONANSI-FORMATE( with"WHERE" key word condition)
+
+1.EQUI-JOIN
+2.NON EQUI-JOIN
+3.SELF-JOIN
+ 
+2/5/23
+tuesday
+
+
+*create table studentt(stid int,sname varchar(40),smailid varchar(40),crid int);
+
+*create table studentt(stid int,sname varchar(40),smailid varchar(40),crid int)
+
+INNER JOIN; matching data only can retrive.
+------------
+1.Data can retrive from multiple tb based on equiality condition
+2.common column must hav
+3.common column datatype also must same
+4.matching data/rows
+
+*select*from studentt inner join coursee on studentt.crid=course.crid;
+
+stid    sname       smailid         crid  crid    cname       cfee
+101     ADAMS	add@gmail.com	10	10	sqlserver	1200.00
+102     JAMES	jay@gmail.com	20	20	sqldba	1500.00
+
+OUTER JOIN; to retrive unmatching rows from tb.
+------------------------------------------------
+1.left outer join; retrive matching  data from all tables but unmatching data from left hand side tb only.
+------------------
+*select*from studentt s left outer join coursee c on s.crid=c.crid;
+
+
+
+101	ADAMS	add@gmail.com	10	10	sqlserver	1200.00
+102	JAMES	jay@gmail.com	20	20	sqldba	1500.00
+103	SCOTT	scot@gmail.com	30	NULL	NULL	      NULL
+
+
+2.right outer join; retrive matching  data from all tables but unmatching data from right hand side tb only.
+------------------
+*select*from studentt s right outer join coursee c on s.crid=c.crid;
+ 
+101	ADAMS	add@gmail.com	10	10	sqlserver	1200.00
+102	JAMES	jay@gmail.com	20	20	sqldba	1500.00
+NULL	NULL	NULL	            NULL  40	 msbi 	3200.00
+NULL	NULL	NULL	            NULL	50	 sap	      2400.00
+
+3.full outer join; retrive matching & `unmatching data from all tables.
+------------------
+*select*from studentt s full outer join coursee c on s.crid=c.crid;
+
+101	ADAMS	add@gmail.com	10	10	sqlserver	1200.00
+102	JAMES	jay@gmail.com	20	20	sqldba	1500.00
+103	SCOTT	scot@gmail.com	30	NULL	NULL	       NULL
+NULL	NULL	NULL        	NULL	40	msbi	      3200.00
+NULL	NULL	NULL	            NULL	50	sap	      2400.00
+
+CROSS JOIN; the prouduct of rows.(MxN)
+-----------
+ .this join used to retrve or join the tables data without joing condition.
+ .no req of common column
+
+* select*from studentt
+* select*from coursee
+* select*from stuentt cross join coursee;
+
+101	ADAMS	add@gmail.com	10	10	sqlserver	1200.00
+101	ADAMS	add@gmail.com	10	20	sqldba	1500.00
+101	ADAMS	add@gmail.com	10	40	msbi	      3200.00
+101	ADAMS	add@gmail.com	10	50	sap	      2400.00
+102	JAMES	jay@gmail.com	20	10	sqlserver	1200.00
+102	JAMES	jay@gmail.com	20	20	sqldba	1500.00
+102	JAMES	jay@gmail.com	20	40	msbi	      3200.00
+102	JAMES	jay@gmail.com	20	50	sap	      2400.00
+103	SCOTT	scot@gmail.com	30	10	sqlserver	1200.00
+103	SCOTT	scot@gmail.com	30	20	sqldba	1500.00
+103	SCOTT	scot@gmail.com	30	40	msbi	      3200.00
+103	SCOTT	scot@gmail.com	30	50	sap	       2400.00
+
+NATURAL JOIN; is = inner join =equi join
+-------------
+ .Basically not supported in sql server but in oracle.
+ .used to avoid duplicate columns.
+
+note; inner join retrive data with duplicate
+   where as   natural join without duplicare .
+
+
+B.NONANSI-FORMATE( with"WHERE" key word condition)
+---------------------------------------------------
+  EQUI-JOIN;                                                      NON EQUI-JOIN
+
+1. retrive data based on = condition                          1.retrive data based on any condition except = condition                                          
+2. cannot use following operators >,<,<=,>=,!>,!<,!=.         2. i cannot use = operator ,can use(>,<,<=,>=,!>,!<,!=).
+
+create table test1(sno int,name varchar(50))
+create table test2(sno int,name varchar(50))
+
+select*from test1
+select*from test2
+
+
+sno   name
+10	VARNER
+20	ALLEN
+30	JONES
+
+sno   name
+10	SAI
+20	ADAMS
+
+
+EQUI JOIN;
+----------
+select*from test1,test2 where test1.sno=test2.sno
+
+name        sno   sno   name
+VARNER	10	10	SAI
+ALLEN	      20	20	ADAMS
+
+NON EQUI JOIN;
+--------------
+ *select*from test1,test2 where test1.sno>test2.sno
+
+20	ALLEN	10	SAI
+40	JONES	10	SAI
+40	JONES	20	ADAMS
+
+
+*select*from test1,test2 where test1.sno<test2.sno
+
+10	VARNER	20	ADAMS
+
+SELF JOIN;
+------------
+.joining a tb data by itself as self join
+.can use with alias name ot the tb
+.can be implement on a single tb
+. when we compare a column values with in the same table
+.any number of alias names can use on single tb
+
+create table empdetails(eid int,ename varchar(40),salary money,mid int);
+
+select*from empdetails;
+ 
+101	SMITH	 8000.00	101
+102   WARNER 11000.00	108
+103	JAMES	 18000.00	109
+104	SCOTT	 82000.00	104
+105	BALKE	 34000.00	110
+106	ADAMS	 8000.00	106
+
+select*from empdetails where salary=8000;
+
+101	SMITH	8000.00	101
+106	ADAMS	8000.00	106
+
+select*from empdetails e1,empdetails e2 where e1.salary=e2.salary
+
+101	SMITH	8000.00	101	101	SMITH	8000.00	101
+106	ADAMS	8000.00	106	101	SMITH	8000.00	101
+102	WARNER11000.00	108	102	WARNER11000.00	108
+103	JAMES	18000.00	109	103	JAMES	18000.00	109
+104	SCOTT	82000.00	104	104	SCOTT	82000.00	104
+105	BALKE	34000.00	110	105	BALKE	34000.00	110
+101	SMITH	8000.00	101	106	ADAMS	8000.00	106
+106	ADAMS	8000.00	106	106	ADAMS	8000.00	106
+
+select*from empdetails e1,empdetails e2 where e1.salary=e2.salary and e2.ename='SMITH';
+
+101	SMITH	8000.00	101	101	SMITH	8000.00	101
+106	ADAMS	8000.00	106	101	SMITH	8000.00	101
+
+3/05/2023
+wednessday
+
+
+GGROUP BY CLAUSE;
+------------------
+It is used to grouping the similar data based on the column.
+
+
+create table ganguly (empno int,ename varchar (40),job varchar(40),hiredate date ,salary money,deptno int);
+
+
+empno ename        job        hairing date  salary    dept no
+
+7369	smith 	 clerk	1980-12-17	8000.0000	20
+7499	allen	      salesman	1982-02-09	57000.0000	30
+7521	ward	      salesman	1982-02-28	86000.0000	30
+7566	jones 	manger	1981-04-02	32000.0000	20
+7654	martin	salesman	1981-09-29	72000.0000	30
+7698	blake 	manager	1981-10-02	70000.0000	30
+7782	clark	      manager	1987-04-15	87000.0000	10
+7788	scott 	analyst	1980-06-28	40000.0000	20
+7839	king	      president   1984-09-29	98000.0000	10
+7844	tarun	      salesman	1986-11-11	62000.0000	30
+7876	adams	       clerk	1986-04-18	28000.0000	20
+7900	james	       clerk	1982-01-01	18000.0000	30
+7902	ford	      analyst	1983-08-27	38000.0000	20
+7934	miller	 clerk	1983-10-15	10000.0000	10
+7365	warner	analyst	1990-01-01	42000.0000	20
+
+select job, count(*) from ganguly group by job;
+
+   job   num of jobs
+
+analyst	3
+clerk	      4
+manager	3
+president	1
+salesman	4
+
+
+select job,sum(salary)from ganguly group by job;
+
+  job       sum of salary
+
+analyst	120000.00
+clerk	      64000.00
+manager	189000.00
+president	98000.00
+salesman	277000.00
+
+select job,max(salary),min (salary),avg(salary)from ganguly group by job;
+
+     
+select job,max(salary)maxsal,min (salary)minsal,avg(salary)avgsal from ganguly group by job;------ (with alias names)
+
+job          max sal    min sal      avg sal     
+
+analyst	42000.00	38000.00	40000.00
+clerk	      28000.00	8000.00	16000.00
+manager	87000.00	32000.00	63000.00
+president	98000.00	98000.00	98000.00
+salesman	86000.00	57000.00	69250.00
+
+select job,count(*),deptno from ganguly group by job,deptno;
+
+job       number of employee   dept no
+
+clerk 	    1            	  10
+manager	    1	              10
+president	    1	              10
+analyst	    3	              20
+clerk	          2               20
+manager	    1	              20
+clerk	          1	              30
+manager         1	              30
+salesman        4	              30
+
+
+HAVING CLAUSE; It is used to filtering the records after grouping data.it should use along with group by key work only.
+--------------
+
+select job,count(*) from ganguly group by job having count(*)<4;
+
+ job       no.of emplyes <4
+analyst	3
+manager	3
+president	1
+
+select job,sum(salary) from ganguly group by job having sum(salary)>100000;
+
+job         sum salary >100000
+
+analyst	120000.00
+manager	189000.00
+salesman	277000.00
+
+
+
+TRANSACTOIN CONTROL LANGUAGE; to perform some operations
+-----------------------------
+
+insert
+update
+delete
+
+
+to control data in table 
+
+.Begin transaction
+.Commit
+.Rollback
+.Savepoint
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
